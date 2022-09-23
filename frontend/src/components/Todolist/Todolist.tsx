@@ -1,9 +1,12 @@
+import './Todolist.sass';
+
 import { Button, Checkbox, Container, IconButton, Snackbar, Stack, TextField } from "@mui/material";
 import useTodolist from "../../hooks/useTodolist";
 import CloseIcon from "@mui/icons-material/Close";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { DataList } from "../../types/interfaces";
 import { parseDate, parseTime } from "../../helpers/helper.todolist";
+
 
 export default function Todolist() {
     const {
@@ -30,35 +33,33 @@ export default function Todolist() {
             const doneDate = parseDate(finishedAt);
 
             return (
-                <li className='ToDoList__item' key={i}>
-                    <Checkbox checked={isChecked}
-                              onChange={() => handleCheckBox(i, id)}
-                              disabled={isChecked}
-                              inputProps={{'aria-label': 'controlled'}}
-                    />
-                    {value}
-                    <span
-                        className='ToDoList__item-time'>{`Started at - ${startDate}, ${startTime} `}</span>
-                    ---
-                    {isChecked ?
-                        (<span
-                            className='ToDoList__item-time'>{` Finished at - ${doneDate}, ${doneTime}`}
-                                </span>) : ''}
-                    <IconButton aria-label="delete"
-                                color="primary"
-                                disabled={isChecked}
-                                onClick={() => deleteTask(i, id)}>
-                        <DeleteIcon/>
-                    </IconButton>
-                    {isChecked ? (
-                        <Button variant="outlined"
-                                color="error"
-                                onClick={() => deleteTask(i, id)}>
-                            Force delete
+                <tr key={id} className={isChecked ? 'Todolist__body-item_checked' : 'Todolist__body-item'}>
+                    <td>
+                        <Checkbox checked={isChecked}
+                                  onChange={() => handleCheckBox(i, id)}
+                                  disabled={isChecked}
+                                  inputProps={{'aria-label': 'controlled'}}
+                        />
+                    </td>
 
-                        </Button>
-                    ) : ''}
-                </li>
+                    <td className={isChecked ? 'Todolist__body-task_checked' : 'Todolist__body-task'}>{value}</td>
+
+                    <td>
+                        {startDate}, {startTime}
+                    </td>
+                    <td>
+
+                        {finishedAt ? `${doneDate}, ${doneTime}` : 'TBD'}
+                    </td>
+
+                    <td>
+                        <IconButton aria-label="delete"
+                                    color="primary"
+                                    onClick={() => deleteTask(i, id)}>
+                            <DeleteIcon/>
+                        </IconButton>
+                    </td>
+                </tr>
             )
         });
     })(dataList);
@@ -82,9 +83,9 @@ export default function Todolist() {
     }
 
     return (
-        <div className='ToDoList'>
-            <Container maxWidth="sm">
-                <div className='ToDoList__header'>
+        <Container maxWidth="md">
+            <div className='Todolist'>
+                <div className='Todolist__header'>
                     <Stack
                         direction="row"
                         justifyContent="center"
@@ -99,10 +100,21 @@ export default function Todolist() {
                         <Button variant="outlined" onClick={addTask}>Add</Button>
                     </Stack>
                 </div>
-                <div className='TodoList__body'>
-                    <ol>
+                <div className='Todolist__body'>
+                    <table className='Todolist__tasks'>
+                        <thead>
+                        <tr>
+                            <th>Done</th>
+                            <th>Task</th>
+                            <th>Start</th>
+                            <th>End</th>
+                            <th>Delete</th>
+                        </tr>
+                        </thead>
+                        <tbody>
                         {taskList}
-                    </ol>
+                        </tbody>
+                    </table>
                 </div>
                 <Snackbar
                     open={openDeleteBar}
@@ -114,7 +126,8 @@ export default function Todolist() {
                     message="Task finished"
                     action={generateAction()}
                 />
-            </Container>
-        </div>
+            </div>
+        </Container>
+
     )
 }

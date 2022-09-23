@@ -4,12 +4,10 @@ import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import {createTheme, ThemeProvider} from '@mui/material/styles';
 import {
     Alert,
     Avatar,
     Button,
-    CssBaseline,
     Dialog,
     DialogActions,
     DialogContent,
@@ -17,19 +15,17 @@ import {
     Grid,
     TextField
 } from '@mui/material';
-import {Link as RouterLink} from "react-router-dom";
-import {useSignUp} from "../hooks/useSignUp";
-import Copyright from "../components/Copyright";
+import { Link as RouterLink } from "react-router-dom";
+import { useSignUp } from "../../hooks/useSignUp";
+import Copyright from "../Copyright";
 
-const theme = createTheme();
 
 export default function SignUp() {
     const {handleSubmit, handleInput, error, openDialog, handleDialog, emailRef} = useSignUp()
 
     return (
-        <ThemeProvider theme={theme}>
+        <>
             <Container component="main" maxWidth="xs">
-                <CssBaseline/>
                 <Box
                     sx={{
                         marginTop: 8,
@@ -136,7 +132,6 @@ export default function SignUp() {
                     </Button>
                 </DialogActions>
             </Dialog>
-
-        </ThemeProvider>
+        </>
     );
 }
