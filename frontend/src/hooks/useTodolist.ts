@@ -1,6 +1,6 @@
-import {useEffect, useRef, useState} from "react";
+import { useEffect, useRef, useState } from "react";
 import axios from "axios";
-import {ChangeHolder, FieldProps, DataList, PendingState} from "../types/interfaces";
+import { ChangeHolder, DataList, FieldProps, PendingState } from "../types/interfaces";
 
 const useTodolist = () => {
     const [dataList, setDataList] = useState<DataList[]>([]);
@@ -17,27 +17,20 @@ const useTodolist = () => {
     })
 
     async function getAllData() {
-        const response = await axios.get('http://localhost:3001/api/v1/tasks');
-        setDataList(response.data);
+        const {data} = await axios.get('http://localhost:3001/api/v1/todolist', {withCredentials: true});
+        if (data.done) setDataList(data.todolist);
+        else console.log(data.message);
     }
-
+    
     useEffect(() => {
-        window.addEventListener('beforeunload', (event) => {
-            // Make changes if there's any pending
-            try {
-                if(null === changeHolder.current) return;
-                changeHolder.current.sendRequest();
-            } catch (e) {
-                console.log(e);
-            }
-        })
-
         // Make request for initial data
         getAllData().catch(e => console.log(e));
     }, [])
 
     function addTask() {
-        if (null === textInput.current) {
+        if (null === textInput.current) return;
+
+        if (!textInput.current.value) {
             setTextFieldProps({
                 helperText: "Empty input.",
                 error: true,
@@ -50,43 +43,45 @@ const useTodolist = () => {
             id: "outlined-basic",
         })
 
-        if(null !== textInput.current) {
-            const newTask = {
-                isChecked: false,
-                inputValue: textInput.current.value,
-            };
+        const newTask = {
+            id: Date.now(),
+            isChecked: false,
+            value: textInput.current.value,
+            startedAt: (new Date()).toString(),
+        };
 
-            // Send dada to the server
-            const {isChecked, inputValue} = newTask;
+        setDataList([...dataList, newTask]);
 
-            axios.post('http://localhost:3001/api/v1/tasks/add', {isChecked, inputValue})
-                .then((res) => {
-                    setDataList([...dataList, res.data]); // Add new data to the dataList
-                    console.log('New task was added!')
-                }).catch(e => console.log(e))
+        axios.post('http://localhost:3001/api/v1/todolist/add', {newTask}, {withCredentials: true})
+            .then((res) => {
+                // Add new data to the dataList
+                console.log(res.data.message)
+            }).catch(e => console.log(e))
 
-            textInput.current.value = ''; // Reset input value
-            textInput.current.focus();
-        }
-
+        textInput.current.value = ''; // Reset input value
+        textInput.current.focus();
     }
 
-    async function sendRequest({id, action} : PendingState, closeSnack = true) {
+    async function sendRequest({id, action, finishedAt}: PendingState, closeSnack = true) {
+        let response;
+
         if (action === 'delete') {
-            await axios.delete('http://localhost:3001/api/v1/tasks/' + id)
+            response = await axios.delete('http://localhost:3001/api/v1/todolist/delete/' + id, {withCredentials: true})
         } else {
-            await axios.patch('http://localhost:3001/api/v1/tasks/' + id)
+            response = await axios.patch('http://localhost:3001/api/v1/todolist/check/' + id, {finishedAt: finishedAt}, {withCredentials: true})
         }
 
+        console.log(response.data.message)
+
         if (closeSnack) {
+            console.log(closeSnack);
             changeHolder.current = null;
             setOpenDeleteBar(false);
             setOpenCheckboxBar(false);
         }
-
     }
 
-    function handlePendingState({id, action} : PendingState) {
+    function handlePendingState({id, action, finishedAt}: PendingState) {
         // If an action was made during timeout
         if (changeHolder.current !== null) {
             clearTimeout(changeHolder.current.timeout);
@@ -96,13 +91,13 @@ const useTodolist = () => {
 
         // Create a new timeout for the current action
         changeHolder.current = {
-            timeout: setTimeout(() => sendRequest({id, action}), 6000),
-            sendRequest: (closeSnack = true) => sendRequest({id, action}, closeSnack)
+            timeout: setTimeout(() => sendRequest({id, action, finishedAt}), 6000),
+            sendRequest: (closeSnack = true) => sendRequest({id, action, finishedAt}, closeSnack)
         }
     }
 
     function deleteTask(i: number, id: number) {
-        dataList.splice(i, 1)
+        dataList.splice(i, 1);
         setDataList([...dataList]);
 
         handlePendingState({action: 'delete', id});
@@ -113,26 +108,24 @@ const useTodolist = () => {
 
     function handleCheckBox(i: number, id: number) {
         dataList[i].isChecked = !dataList[i].isChecked;
-        dataList[i].finishedAt = new Date().toString();
+        const finishedAt = new Date().toString();
+        dataList[i].finishedAt = finishedAt;
         setDataList([...dataList])
 
-        handlePendingState({action: 'check', id});
+        handlePendingState({action: 'check', id, finishedAt});
 
         // Open new Snackbar
         setOpenCheckboxBar(true);
     }
 
     function closeSnackbar() {
-        if(changeHolder.current === null) return;
+        if (changeHolder.current === null) return;
         clearTimeout(changeHolder.current.timeout);
         changeHolder.current.sendRequest();
-        changeHolder.current = null;
-        setOpenDeleteBar(false);
-        setOpenCheckboxBar(false);
     }
 
     function undo() {
-        if(changeHolder.current === null) return;
+        if (changeHolder.current === null) return;
         clearTimeout(changeHolder.current.timeout);
         changeHolder.current = null;
         getAllData().catch(e => console.log(e));

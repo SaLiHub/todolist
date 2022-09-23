@@ -1,22 +1,21 @@
 import * as React from 'react';
-import FormControlLabel from '@mui/material/FormControlLabel';
 import Link from '@mui/material/Link';
 import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+import {createTheme, ThemeProvider} from '@mui/material/styles';
 import {
-    Checkbox,
-    Grid,
-    Button,
-    Avatar,
-    CssBaseline,
-    TextField,
     Alert,
+    Avatar,
+    Button,
+    CssBaseline,
     Dialog,
     DialogActions,
-    DialogContentText, DialogContent
+    DialogContent,
+    DialogContentText,
+    Grid,
+    TextField
 } from '@mui/material';
 import {Link as RouterLink} from "react-router-dom";
 import {useSignUp} from "../hooks/useSignUp";
@@ -24,14 +23,13 @@ import Copyright from "../components/Copyright";
 
 const theme = createTheme();
 
-
-export default function SignUn() {
-    const { handleSubmit, handleInput, error, openDialog, handleDialog } = useSignUp()
+export default function SignUp() {
+    const {handleSubmit, handleInput, error, openDialog, handleDialog, emailRef} = useSignUp()
 
     return (
         <ThemeProvider theme={theme}>
             <Container component="main" maxWidth="xs">
-                <CssBaseline />
+                <CssBaseline/>
                 <Box
                     sx={{
                         marginTop: 8,
@@ -40,8 +38,8 @@ export default function SignUn() {
                         alignItems: 'center',
                     }}
                 >
-                    <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-                        <LockOutlinedIcon />
+                    <Avatar sx={{m: 1, bgcolor: 'secondary.main'}}>
+                        <LockOutlinedIcon/>
                     </Avatar>
                     <Typography component="h1" variant="h5">
                         Sign Up
@@ -49,7 +47,7 @@ export default function SignUn() {
                     {error && <Alert variant="outlined" severity="error" style={{marginTop: "10px", width: "100%"}}>
                         {error.message}
                     </Alert>}
-                    <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+                    <Box component="form" onSubmit={handleSubmit} noValidate sx={{mt: 1}}>
                         <TextField
                             margin="normal"
                             required
@@ -57,9 +55,11 @@ export default function SignUn() {
                             id="email"
                             label="Email Address"
                             name="email"
+                            type="email"
                             autoComplete="email"
                             autoFocus
                             onChange={handleInput}
+                            inputRef={emailRef}
                         />
                         <TextField
                             margin="normal"
@@ -99,15 +99,11 @@ export default function SignUn() {
                             id="password"
                             autoComplete="current-password"
                         />
-                        <FormControlLabel
-                            control={<Checkbox value="remember" color="primary" />}
-                            label="Remember me"
-                        />
                         <Button
                             type="submit"
                             fullWidth
                             variant="contained"
-                            sx={{ mt: 3, mb: 2 }}
+                            sx={{mt: 3, mb: 2}}
                         >
                             Sign up
                         </Button>
@@ -120,7 +116,7 @@ export default function SignUn() {
                         </Grid>
                     </Box>
                 </Box>
-                <Copyright sx={{ mt: 8, mb: 4 }} />
+                <Copyright sx={{mt: 8, mb: 4}}/>
             </Container>
 
             <Dialog

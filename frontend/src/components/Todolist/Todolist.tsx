@@ -1,9 +1,9 @@
-import {Button, Checkbox, Container, IconButton, Snackbar, Stack, TextField} from "@mui/material";
+import { Button, Checkbox, Container, IconButton, Snackbar, Stack, TextField } from "@mui/material";
 import useTodolist from "../../hooks/useTodolist";
 import CloseIcon from "@mui/icons-material/Close";
 import DeleteIcon from "@mui/icons-material/Delete";
-import {DataList} from "../../types/interfaces";
-import {parseDate, parseTime} from "../../helpers/helper.todolist";
+import { DataList } from "../../types/interfaces";
+import { parseDate, parseTime } from "../../helpers/helper.todolist";
 
 export default function Todolist() {
     const {
@@ -19,8 +19,8 @@ export default function Todolist() {
         dataList
     } = useTodolist();
 
-     const taskList = (function createTaskList(dataList) {
-        return dataList.map((el : DataList, i) => {
+    const taskList = (function createTaskList(dataList) {
+        return dataList.map((el: DataList, i) => {
             const {id, isChecked, value, startedAt, finishedAt} = el;
 
             const startTime = parseTime(startedAt);
@@ -99,7 +99,6 @@ export default function Todolist() {
                         <Button variant="outlined" onClick={addTask}>Add</Button>
                     </Stack>
                 </div>
-
                 <div className='TodoList__body'>
                     <ol>
                         {taskList}

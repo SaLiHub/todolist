@@ -13,11 +13,12 @@ export interface DataList {
     id: number,
     isChecked: boolean,
     startedAt: string,
-    finishedAt: string,
+    finishedAt?: string,
     value: string,
 }
 
 export interface PendingState {
     id: number,
-    action: string
+    action: string,
+    finishedAt?: string
 }

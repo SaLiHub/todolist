@@ -1,8 +1,9 @@
 import express from "express";
 import cors from "cors";
-import users from './api/routers.js'
-const app = express();
+import users from './api/routers/routers.js'
 import cookieParser from 'cookie-parser';
+
+const app = express();
 
 // Middleware
 app.use(cors({credentials: true, origin: true}));

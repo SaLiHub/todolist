@@ -5,8 +5,8 @@ import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import {Checkbox, Grid, Button, Avatar, CssBaseline, TextField, Alert} from '@mui/material';
+import {createTheme, ThemeProvider} from '@mui/material/styles';
+import {Alert, Avatar, Button, Checkbox, CssBaseline, Grid, TextField} from '@mui/material';
 import {Link as RouterLink} from "react-router-dom";
 import {useSignIn} from "../hooks/useSignIn";
 import Copyright from "../components/Copyright";
@@ -14,15 +14,14 @@ import Copyright from "../components/Copyright";
 const theme = createTheme();
 
 
-
 export default function SignIn() {
 
-    const { handleSubmit, error, checkboxRef } = useSignIn();
+    const {handleSubmit, checkboxRef, emailRef, error} = useSignIn();
 
     return (
         <ThemeProvider theme={theme}>
             <Container component="main" maxWidth="xs">
-                <CssBaseline />
+                <CssBaseline/>
                 <Box
                     sx={{
                         marginTop: 8,
@@ -31,8 +30,8 @@ export default function SignIn() {
                         alignItems: 'center',
                     }}
                 >
-                    <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-                        <LockOutlinedIcon />
+                    <Avatar sx={{m: 1, bgcolor: 'secondary.main'}}>
+                        <LockOutlinedIcon/>
                     </Avatar>
                     <Typography component="h1" variant="h5">
                         Sign in
@@ -40,7 +39,7 @@ export default function SignIn() {
                     {error && <Alert variant="outlined" severity="error" style={{marginTop: "10px", width: "100%"}}>
                         {error.message}
                     </Alert>}
-                    <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+                    <Box component="form" onSubmit={handleSubmit} noValidate sx={{mt: 1}}>
                         <TextField
                             margin="normal"
                             required
@@ -49,7 +48,9 @@ export default function SignIn() {
                             label="Email Address"
                             name="email"
                             autoComplete="email"
+                            type="email"
                             autoFocus
+                            inputRef={emailRef}
                         />
                         <TextField
                             margin="normal"
@@ -74,7 +75,7 @@ export default function SignIn() {
                             type="submit"
                             fullWidth
                             variant="contained"
-                            sx={{ mt: 3, mb: 2 }}
+                            sx={{mt: 3, mb: 2}}
                         >
                             Sign In
                         </Button>
@@ -92,7 +93,7 @@ export default function SignIn() {
                         </Grid>
                     </Box>
                 </Box>
-                <Copyright sx={{ mt: 8, mb: 4 }} />
+                <Copyright sx={{mt: 8, mb: 4}}/>
             </Container>
         </ThemeProvider>
     );

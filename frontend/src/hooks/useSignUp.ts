@@ -1,6 +1,7 @@
 import axios from "axios";
-import {useNavigate} from "react-router-dom";
-import {useState} from "react";
+import { useNavigate } from "react-router-dom";
+import { useRef, useState } from "react";
+import { isValidEmail } from "../helpers/helper.todolist";
 
 export interface Error {
     name: string;
@@ -10,22 +11,30 @@ export interface Error {
 export const useSignUp = () => {
 
     const [error, setError] = useState<Error | null>();
-    const [openDialog, setOpenDialog] = useState(false)
+    const [openDialog, setOpenDialog] = useState(false);
+
+    const emailRef = useRef() as React.MutableRefObject<HTMLInputElement>;
 
     const handleDialog = () => {
         setOpenDialog(false);
-        navigate("/sign-in", { replace: true });
-    }
+        navigate("/sign-in", {replace: true});
+    };
 
     const navigate = useNavigate();
 
     const handleInput = () => {
         // Clear error if user start typing in inputs
         setError(null);
-    }
+    };
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
+        if (!isValidEmail(emailRef.current.value)) {
+            setError({name: 'error', message: 'Email is not valid'});
+            return;
+        }
+        ;
+
         const data = new FormData(event.currentTarget);
         const dataToSend = {
             email: data.get('email'),
@@ -35,10 +44,11 @@ export const useSignUp = () => {
             username: data.get('username'),
         }
 
+
         axios.post(`http://localhost:3001/api/v1/sign-up`, dataToSend)
             .then((res) => {
                 const {message, done} = res.data;
-                if(done) {
+                if (done) {
                     setOpenDialog(true);
                 } else {
                     setError({name: 'error', message});
@@ -52,6 +62,7 @@ export const useSignUp = () => {
         handleInput,
         error,
         openDialog,
-        handleDialog
+        handleDialog,
+        emailRef
     }
 }
