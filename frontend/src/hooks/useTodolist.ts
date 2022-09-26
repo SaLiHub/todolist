@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { ChangeHolder, DataList, FieldProps, PendingState } from "../types/interfaces";
+import { SERVER_URL } from "../constants";
 
 const useTodolist = () => {
     const [dataList, setDataList] = useState<DataList[]>([]);
@@ -17,11 +18,11 @@ const useTodolist = () => {
     })
 
     async function getAllData() {
-        const {data} = await axios.get('http://localhost:3001/api/v1/todolist', {withCredentials: true});
+        const {data} = await axios.get(`${SERVER_URL}/api/v1/todolist`, {withCredentials: true});
         if (data.done) setDataList(data.todolist);
         else console.log(data.message);
     }
-    
+
     useEffect(() => {
         // Make request for initial data
         getAllData().catch(e => console.log(e));
@@ -52,7 +53,7 @@ const useTodolist = () => {
 
         setDataList([...dataList, newTask]);
 
-        axios.post('http://localhost:3001/api/v1/todolist/add', {newTask}, {withCredentials: true})
+        axios.post(`${SERVER_URL}/api/v1/todolist/add`, {newTask}, {withCredentials: true})
             .then((res) => {
                 // Add new data to the dataList
                 console.log(res.data.message)
@@ -66,9 +67,9 @@ const useTodolist = () => {
         let response;
 
         if (action === 'delete') {
-            response = await axios.delete('http://localhost:3001/api/v1/todolist/delete/' + id, {withCredentials: true})
+            response = await axios.delete(`${SERVER_URL}/api/v1/todolist/delete/${id}`, {withCredentials: true})
         } else {
-            response = await axios.patch('http://localhost:3001/api/v1/todolist/check/' + id, {finishedAt: finishedAt}, {withCredentials: true})
+            response = await axios.patch(`${SERVER_URL}/api/v1/todolist/check/${id}`, {finishedAt: finishedAt}, {withCredentials: true})
         }
 
         console.log(response.data.message)

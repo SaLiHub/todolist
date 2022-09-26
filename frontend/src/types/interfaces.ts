@@ -22,3 +22,7 @@ export interface PendingState {
     action: string,
     finishedAt?: string
 }
+
+export interface SignInProps {
+    setReload: (value: boolean) => void
+}

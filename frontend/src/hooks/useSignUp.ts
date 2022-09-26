@@ -2,6 +2,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useRef, useState } from "react";
 import { isValidEmail } from "../helpers/helper.todolist";
+import { SERVER_URL } from "../constants";
 
 export interface Error {
     name: string;
@@ -45,7 +46,7 @@ export const useSignUp = () => {
         }
 
 
-        axios.post(`http://localhost:3001/api/v1/sign-up`, dataToSend)
+        axios.post(`${SERVER_URL}/api/v1/sign-up`, dataToSend)
             .then((res) => {
                 const {message, done} = res.data;
                 if (done) {
