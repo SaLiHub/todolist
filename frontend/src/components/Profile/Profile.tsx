@@ -5,18 +5,20 @@ import axios from "axios";
 import Todolist from "../Todolist/Todolist";
 import LogoutIcon from '@mui/icons-material/Logout';
 import { Container, IconButton } from "@mui/material";
+import { SERVER_URL } from "../../constants";
+import { SignInProps } from "../../types/interfaces";
 
-export default function Profile() {
+export default function Profile({setReload}: SignInProps) {
 
     const [userInfo, setUserInfo] = useState<string | undefined>();
 
     function logout() {
         localStorage.isAuth = false;
-        window.location.href = '/sign-in';
+        setReload(false);
     }
 
     useEffect(() => {
-        axios.get(`http://localhost:3001/api/v1/profile`, {withCredentials: true}).then((res) => {
+        axios.get(`${SERVER_URL}/api/v1/profile`, {withCredentials: true}).then((res) => {
             if (res.data.done) {
                 setUserInfo(res.data.username)
             } else {

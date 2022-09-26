@@ -10,11 +10,15 @@ import { Alert, Avatar, Button, Checkbox, Grid, TextField } from '@mui/material'
 import { Link as RouterLink } from "react-router-dom";
 import { useSignIn } from "../../hooks/useSignIn";
 import Copyright from "../Copyright";
+import { FC } from "react";
 
+export interface SignInProps {
+    setReload: (value: boolean) => void
+}
 
-export default function SignIn() {
+const SignIn: FC<SignInProps> = ({setReload}) => {
 
-    const {handleSubmit, checkboxRef, emailRef, error} = useSignIn();
+    const {handleSubmit, checkboxRef, emailRef, error} = useSignIn(setReload);
 
     return (
         <Container component="main" maxWidth="xs">
@@ -92,4 +96,5 @@ export default function SignIn() {
             <Copyright sx={{mt: 8, mb: 4}}/>
         </Container>
     );
-}
+};
+export default SignIn

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './App.sass';
 
 import { Navigate, Route, Routes } from "react-router-dom";
@@ -15,6 +15,7 @@ const darkTheme = createTheme({
 
 function App() {
 
+    const [, setReload] = useState(false);
     const isAuth = localStorage.getItem('isAuth');
 
     return (
@@ -24,14 +25,14 @@ function App() {
                 <div className="App">
                     {isAuth === 'true' ?
                         <Routes>
-                            <Route path="/profile" element={<Profile/>}/>
+                            <Route path="/profile" element={<Profile setReload={setReload}/>}/>
                             <Route
                                 path="*"
                                 element={<Navigate to="/profile" replace/>}
                             />
                         </Routes> :
                         <Routes>
-                            <Route path="/sign-in" element={<SignIn/>}/>
+                            <Route path="/sign-in" element={<SignIn setReload={setReload}/>}/>
                             <Route path="/sign-up" element={<SignUp/>}/>
                             <Route
                                 path="*"
