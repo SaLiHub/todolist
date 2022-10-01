@@ -51,12 +51,12 @@ export default class UsersController {
                     if (result) {
                         let token;
                         if (isChecked) {
-                            token = jwt.sign({email}, process.env.TOKEN_KEY);
+                            token = jwt.sign({email}, process.env.TOKEN_KEY, {expiresIn: 60 * 60 * 24 * 7});
                         } else {
                             // Create expired token
-                            token = jwt.sign({email}, process.env.TOKEN_KEY, {expiresIn: 60 * 60 * 12});
+                            token = jwt.sign({email}, process.env.TOKEN_KEY, {expiresIn: 60 * 60});
                         }
-                        res.cookie(`JWT_TOKEN=Bearer ${token}; httponly;`).json({
+                        res.cookie(`JWT_TOKEN=Bearer ${token}; httponly; SameSite=None; Secure;`).json({
                             done: true,
                             token
                         })
@@ -69,7 +69,7 @@ export default class UsersController {
                     done: false,
                     message: 'No user under that email was found'
                 })
-                return;
+
             }
 
         } catch (e) {
@@ -87,6 +87,7 @@ export default class UsersController {
                 res.json({done: false, message: err.message});
             } else {
                 req.user = user;
+                res.header('Access-Control-Allow-Origin', req.header('origin'));
                 next();
             }
         })
