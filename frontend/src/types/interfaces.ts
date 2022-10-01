@@ -25,4 +25,9 @@ export interface PendingState {
 
 export interface SignInProps {
     setReload: (value: boolean) => void
+    reload: boolean
+}
+
+export interface TaskCache {
+    [key: string]: number;
 }

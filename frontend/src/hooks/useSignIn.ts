@@ -3,8 +3,9 @@ import { useRef, useState } from "react";
 import { Error } from './useSignUp';
 import { isValidEmail } from "../helpers/helper.todolist";
 import { SERVER_URL } from "../constants";
+import { SignInProps } from "../types/interfaces";
 
-export const useSignIn = (setReload: (value: boolean) => void) => {
+export const useSignIn = ({reload, setReload}: SignInProps) => {
 
     const [error, setError] = useState<Error | null>();
     const checkboxRef = useRef() as React.MutableRefObject<HTMLInputElement>;
@@ -29,7 +30,7 @@ export const useSignIn = (setReload: (value: boolean) => void) => {
                 const {message, done} = res.data;
                 if (done) {
                     localStorage.setItem('isAuth', 'true');
-                    setReload(true);
+                    setReload(!reload);
                 } else {
                     setError({name: 'error', message});
                 }

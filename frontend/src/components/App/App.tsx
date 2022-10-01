@@ -15,7 +15,7 @@ const darkTheme = createTheme({
 
 function App() {
 
-    const [, setReload] = useState(false);
+    const [reload, setReload] = useState(false);
     const isAuth = localStorage.getItem('isAuth');
 
     return (
@@ -25,14 +25,14 @@ function App() {
                 <div className="App">
                     {isAuth === 'true' ?
                         <Routes>
-                            <Route path="/profile" element={<Profile setReload={setReload}/>}/>
+                            <Route path="/profile" element={<Profile reload={{reload, setReload}}/>}/>
                             <Route
                                 path="*"
                                 element={<Navigate to="/profile" replace/>}
                             />
                         </Routes> :
                         <Routes>
-                            <Route path="/sign-in" element={<SignIn setReload={setReload}/>}/>
+                            <Route path="/sign-in" element={<SignIn reload={{reload, setReload}}/>}/>
                             <Route path="/sign-up" element={<SignUp/>}/>
                             <Route
                                 path="*"

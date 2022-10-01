@@ -8,13 +8,14 @@ import { Container, IconButton } from "@mui/material";
 import { SERVER_URL } from "../../constants";
 import { SignInProps } from "../../types/interfaces";
 
-export default function Profile({setReload}: SignInProps) {
+export default function Profile(props: { reload: SignInProps }) {
 
+    const {reload, setReload} = props.reload;
     const [userInfo, setUserInfo] = useState<string | undefined>();
 
     function logout() {
         localStorage.isAuth = false;
-        setReload(false);
+        setReload(!reload);
     }
 
     useEffect(() => {
