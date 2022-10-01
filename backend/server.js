@@ -5,9 +5,12 @@ import cookieParser from 'cookie-parser';
 
 const app = express();
 
+const whitelist = ['https://cerulean-seahorse-e3d88d.netlify.app', 'http://localhost:3000'];
+
 // Middleware
 app.use(cors({
-    credentials: true
+    credentials: true,
+    origin: whitelist
 }));
 
 app.use(express.json());

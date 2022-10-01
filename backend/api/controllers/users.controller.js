@@ -87,7 +87,6 @@ export default class UsersController {
                 res.json({done: false, message: err.message});
             } else {
                 req.user = user;
-                res.header('Access-Control-Allow-Origin', req.header('origin'));
                 next();
             }
         })
