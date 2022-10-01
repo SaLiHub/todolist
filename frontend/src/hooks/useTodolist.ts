@@ -2,12 +2,19 @@ import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { ChangeHolder, DataList, FieldProps, PendingState } from "../types/interfaces";
 import { SERVER_URL } from "../constants";
+import { countCompletedTasks } from "../helpers/helper.todolist";
 
 const useTodolist = () => {
     const [dataList, setDataList] = useState<DataList[]>([]);
     const [openCheckboxBar, setOpenCheckboxBar] = useState(false);
     const [openDeleteBar, setOpenDeleteBar] = useState(false);
 
+    const tasksState = {
+        completed: countCompletedTasks(dataList),
+        count: dataList.length
+    }
+
+    // Input ref
     const textInput = useRef<HTMLInputElement | null>(null);
 
     // Hold last change in case user wants to undo it
@@ -55,7 +62,6 @@ const useTodolist = () => {
 
         axios.post(`${SERVER_URL}/api/v1/todolist/add`, {newTask}, {withCredentials: true})
             .then((res) => {
-                // Add new data to the dataList
                 console.log(res.data.message)
             }).catch(e => console.log(e))
 
@@ -64,18 +70,13 @@ const useTodolist = () => {
     }
 
     async function sendRequest({id, action, finishedAt}: PendingState, closeSnack = true) {
-        let response;
-
         if (action === 'delete') {
-            response = await axios.delete(`${SERVER_URL}/api/v1/todolist/delete/${id}`, {withCredentials: true})
+            await axios.delete(`${SERVER_URL}/api/v1/todolist/delete/${id}`, {withCredentials: true})
         } else {
-            response = await axios.patch(`${SERVER_URL}/api/v1/todolist/check/${id}`, {finishedAt: finishedAt}, {withCredentials: true})
+            await axios.patch(`${SERVER_URL}/api/v1/todolist/check/${id}`, {finishedAt: finishedAt}, {withCredentials: true})
         }
 
-        console.log(response.data.message)
-
         if (closeSnack) {
-            console.log(closeSnack);
             changeHolder.current = null;
             setOpenDeleteBar(false);
             setOpenCheckboxBar(false);
@@ -108,10 +109,11 @@ const useTodolist = () => {
     }
 
     function handleCheckBox(i: number, id: number) {
-        dataList[i].isChecked = !dataList[i].isChecked;
+        dataList[i].isChecked = true;
         const finishedAt = new Date().toString();
         dataList[i].finishedAt = finishedAt;
-        setDataList([...dataList])
+
+        setDataList([...dataList]);
 
         handlePendingState({action: 'check', id, finishedAt});
 
@@ -145,6 +147,7 @@ const useTodolist = () => {
         openDeleteBar,
         textInput,
         dataList,
+        tasksState
     }
 }
 

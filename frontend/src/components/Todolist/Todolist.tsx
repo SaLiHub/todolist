@@ -19,7 +19,8 @@ export default function Todolist() {
         openDeleteBar,
         handleCheckBox,
         deleteTask,
-        dataList
+        dataList,
+        tasksState
     } = useTodolist();
 
     const taskList = (function createTaskList(dataList) {
@@ -86,19 +87,23 @@ export default function Todolist() {
         <Container maxWidth="md">
             <div className='Todolist'>
                 <div className='Todolist__header'>
-                    <Stack
-                        direction="row"
-                        justifyContent="center"
-                        alignItems="center"
-                        spacing={2}>
+                    <div>
+                        <p>Tasks: {tasksState.count}</p>
+                    </div>
+                    <div className='Todolist__input-container'>
                         <TextField inputRef={textInput}
                                    label="Enter a task"
                                    variant="outlined"
                                    margin="dense"
                                    {...textFieldProps}
                         />
-                        <Button variant="outlined" onClick={addTask}>Add</Button>
-                    </Stack>
+                        <div className='Todolist__add-button-container'>
+                            <Button variant="outlined" onClick={addTask}>Add</Button>
+                        </div>
+                    </div>
+                    <div>
+                        <p>Completed: {tasksState.completed}</p>
+                    </div>
                 </div>
                 <div className='Todolist__body'>
                     <table className='Todolist__tasks'>
